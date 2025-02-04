@@ -37,21 +37,91 @@
 <script>
 //Your code goes here 
 	let draggedDiv = null;
-	function allowDrop(event) {
-		event.preventDefault();
-	}
-	function drag(event){
-		draggedDiv = event.target;
-	}
-	function drop(event){
-		event.preventDefault();
-		const targetContainer = event.currentTarget;
-		if(targetContainer !== draggedDiv){
-			const tempContent = targetContainer.innerHTML;
-			targetContainer.innerHTML = draggedDiv.innerHTML;
-			draggedDiv.innerHTML = tempContent;
-		}
-	}
+let offsetX = 0;
+let offsetY = 0;
+
+function allowDrop(event) {
+    event.preventDefault(); // Prevent default behavior to allow drop
+}
+
+function drag(event) {
+    draggedDiv = event.target;
+
+    // Get the offset of the mouse click relative to the element's position
+    const rect = draggedDiv.getBoundingClientRect();
+    offsetX = event.clientX - rect.left;
+    offsetY = event.clientY - rect.top;
+
+    // Temporarily disable transitions for smoother dragging
+    draggedDiv.style.transition = 'none';
+}
+
+function drop(event) {
+    event.preventDefault();
+
+    // Ensure the dragged item is still valid
+    if (!draggedDiv) return;
+
+    const targetContainer = event.currentTarget;
+    
+    // Calculate new position
+    const newLeft = event.clientX - offsetX;
+    const newTop = event.clientY - offsetY;
+
+    // Get the container's boundary
+    const containerRect = targetContainer.getBoundingClientRect();
+
+    // Constrain the dragged item within the container
+    let finalLeft = newLeft;
+    let finalTop = newTop;
+
+    if (newLeft < containerRect.left) finalLeft = containerRect.left;
+    if (newLeft + draggedDiv.offsetWidth > containerRect.right) finalLeft = containerRect.right - draggedDiv.offsetWidth;
+    if (newTop < containerRect.top) finalTop = containerRect.top;
+    if (newTop + draggedDiv.offsetHeight > containerRect.bottom) finalTop = containerRect.bottom - draggedDiv.offsetHeight;
+
+    // Update the position of the dragged item
+    draggedDiv.style.position = 'absolute'; // Ensure absolute positioning to move the item freely
+    draggedDiv.style.left = `${finalLeft - containerRect.left}px`;
+    draggedDiv.style.top = `${finalTop - containerRect.top}px`;
+
+    // Re-enable transitions after drop
+    draggedDiv.style.transition = 'transform 0.1s ease';
+    
+    // Reset the dragging state
+    draggedDiv = null;
+}
+
+// Attach the event listeners for all items
+const items = document.querySelectorAll('.item');
+items.forEach(item => {
+    item.addEventListener('mousedown', (event) => {
+        // Activate dragging mode by adding the "active" class to the container
+        document.querySelector('.items').classList.add('active');
+        drag(event); // Initialize dragging
+    });
+
+    item.addEventListener('mousemove', (event) => {
+        // Allow moving the item smoothly when dragging
+        if (draggedDiv) {
+            const newLeft = event.clientX - offsetX;
+            const newTop = event.clientY - offsetY;
+            draggedDiv.style.left = `${newLeft}px`;
+            draggedDiv.style.top = `${newTop}px`;
+        }
+    });
+
+    item.addEventListener('mouseup', (event) => {
+        // End dragging and drop
+        if (draggedDiv) {
+            drop(event); // Finalize drop logic
+        }
+
+        // Deactivate dragging mode
+        document.querySelector('.items').classList.remove('active');
+    });
+});
+
 </script>
 
   </body>
