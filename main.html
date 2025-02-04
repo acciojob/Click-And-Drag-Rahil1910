@@ -2,127 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Click and Drag</title>
+  <title>Drag and Drop Cubes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="items">
-    <div class="item item1" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">01</div>
-    <div class="item item2" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">02</div>
-    <div class="item item3" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">03</div>
-    <div class="item item4" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">04</div>
-    <div class="item item5" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">05</div>
-    <div class="item item6" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">06</div>
-    <div class="item item7" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">07</div>
-    <div class="item item8" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">08</div>
-    <div class="item item9" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">09</div>
-    <div class="item item10" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">10</div>
-    <div class="item item11" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">11</div>
-    <div class="item item12" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">12</div>
-    <div class="item item13" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">13</div>
-    <div class="item item14" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">14</div>
-    <div class="item item15" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">15</div>
-    <div class="item item16" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">16</div>
-    <div class="item item17" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">17</div>
-    <div class="item item18" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">18</div>
-    <div class="item item19" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">19</div>
-    <div class="item item20" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">20</div>
-    <div class="item item21" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">21</div>
-    <div class="item item22" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">22</div>
-    <div class="item item23" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">23</div>
-    <div class="item item24" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">24</div>
-    <div class="item item25" draggable="true" ondrop="drop(event)" ondragstart="drag(event)" ondragover="allowDrop(event)">25</div>
+  <div class="container">
+    <div class="cube" id="cube1"></div>
+    <div class="cube" id="cube2"></div>
+    <div class="cube" id="cube3"></div>
+    <div class="cube" id="cube4"></div>
+    <div class="cube" id="cube5"></div>
+    <div class="cube" id="cube6"></div>
+    <div class="cube" id="cube7"></div>
+    <div class="cube" id="cube8"></div>
+    <div class="cube" id="cube9"></div>
   </div>
 
-<script>
-//Your code goes here 
-	let draggedDiv = null;
-let offsetX = 0;
-let offsetY = 0;
-
-function allowDrop(event) {
-    event.preventDefault(); // Prevent default behavior to allow drop
-}
-
-function drag(event) {
-    draggedDiv = event.target;
-
-    // Get the offset of the mouse click relative to the element's position
-    const rect = draggedDiv.getBoundingClientRect();
-    offsetX = event.clientX - rect.left;
-    offsetY = event.clientY - rect.top;
-
-    // Temporarily disable transitions for smoother dragging
-    draggedDiv.style.transition = 'none';
-}
-
-function drop(event) {
-    event.preventDefault();
-
-    // Ensure the dragged item is still valid
-    if (!draggedDiv) return;
-
-    const targetContainer = event.currentTarget;
-    
-    // Calculate new position
-    const newLeft = event.clientX - offsetX;
-    const newTop = event.clientY - offsetY;
-
-    // Get the container's boundary
-    const containerRect = targetContainer.getBoundingClientRect();
-
-    // Constrain the dragged item within the container
-    let finalLeft = newLeft;
-    let finalTop = newTop;
-
-    if (newLeft < containerRect.left) finalLeft = containerRect.left;
-    if (newLeft + draggedDiv.offsetWidth > containerRect.right) finalLeft = containerRect.right - draggedDiv.offsetWidth;
-    if (newTop < containerRect.top) finalTop = containerRect.top;
-    if (newTop + draggedDiv.offsetHeight > containerRect.bottom) finalTop = containerRect.bottom - draggedDiv.offsetHeight;
-
-    // Update the position of the dragged item
-    draggedDiv.style.position = 'absolute'; // Ensure absolute positioning to move the item freely
-    draggedDiv.style.left = `${finalLeft - containerRect.left}px`;
-    draggedDiv.style.top = `${finalTop - containerRect.top}px`;
-
-    // Re-enable transitions after drop
-    draggedDiv.style.transition = 'transform 0.1s ease';
-    
-    // Reset the dragging state
-    draggedDiv = null;
-}
-
-// Attach the event listeners for all items
-const items = document.querySelectorAll('.item');
-items.forEach(item => {
-    item.addEventListener('mousedown', (event) => {
-        // Activate dragging mode by adding the "active" class to the container
-        document.querySelector('.items').classList.add('active');
-        drag(event); // Initialize dragging
-    });
-
-    item.addEventListener('mousemove', (event) => {
-        // Allow moving the item smoothly when dragging
-        if (draggedDiv) {
-            const newLeft = event.clientX - offsetX;
-            const newTop = event.clientY - offsetY;
-            draggedDiv.style.left = `${newLeft}px`;
-            draggedDiv.style.top = `${newTop}px`;
-        }
-    });
-
-    item.addEventListener('mouseup', (event) => {
-        // End dragging and drop
-        if (draggedDiv) {
-            drop(event); // Finalize drop logic
-        }
-
-        // Deactivate dragging mode
-        document.querySelector('.items').classList.remove('active');
-    });
-});
-
-</script>
-
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>
